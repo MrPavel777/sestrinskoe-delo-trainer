@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from 'react'
 
 const CYR_LABELS = ['А','Б','В','Г']
@@ -59,7 +58,7 @@ function Home({total, blocksCount, onStartTrain, onStartExam, onStartFavs, onSta
   const [examSource, setExamSource] = useState('selected')
   return (
     <div className="container">
-      <h1 style={{margin:'8px 0 16px'}}>Тренажёр‑тест «Сестринское дело»</h1>
+      <h1 style={{margin:'8px 0 16px'}}>Тренажёр-тест «Сестринское дело»</h1>
       <div className="grid4" style={{marginBottom:16}}>
         <div className="tile" onClick={()=>onStartTrain(selectedBlock)}>
           <div className="tile-title">Тренировка</div>
@@ -277,14 +276,20 @@ function TestView({mode, items, onExit, onFinishExam}){
                 const chosen = answers[q.number]
                 const active = i===idx
                 return (
-                  <div key={q.number} className={'itemline '+(active?'active':'')} onClick={()=>{}} onDoubleClick={()=>{}}>
-                    <div className="row" style={{justifyContent:'space-between', width:'100%'}} onClick={()=>{}}>
-                      <div style={{display:'flex', gap:8, alignItems:'center', cursor:'pointer'}} onClick={()=>{}}>
+                  <div
+                    key={q.number}
+                    className={'itemline '+(active?'active':'')}
+                    onClick={()=>setIdx(i)}
+                    title={q.qtext}
+                  >
+                    <div className="row" style={{justifyContent:'space-between', width:'100%'}}>
+                      <div style={{display:'flex', gap:8, alignItems:'center', cursor:'pointer'}}>
                         <span className="badge">{q.number}</span>
-                        <div style={{maxWidth:520, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}} title={q.qtext}
-                          onClick={()=>{}}>{q.qtext}</div>
+                        <div style={{maxWidth:520, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>
+                          {q.qtext}
+                        </div>
                       </div>
-                      <div onClick={()=>{}}>
+                      <div>
                         {chosen ? (chosen===q.correctText ? '✅' : '❌') : '•'}
                       </div>
                     </div>
@@ -311,8 +316,10 @@ export default function App(){
   const [items, setItems] = useState([])
   const [examSnapshot, setExamSnapshot] = useState(null) // {items, answers}
 
+  // ✅ ВАЖНО: правильная загрузка файла из public/ для GitHub Pages
   useEffect(()=>{
-    fetch('/public/questions.txt'.replace('/public','/public'))
+    const base = import.meta.env.BASE_URL || '/';
+    fetch(base + 'questions.txt')
       .then(r=>r.ok?r.text():'')
       .then(setRaw)
       .catch(()=>{})
